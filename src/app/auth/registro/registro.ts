@@ -2,13 +2,14 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder , FormGroup ,Validators ,ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AutentiService} from '../../autenti.service';
 import { object } from '@angular/fire/database';//
 
 @Component({
   selector: 'app-registro',
   standalone:true,
-  imports: [ CommonModule,ReactiveFormsModule],
+  imports: [ CommonModule,ReactiveFormsModule,RouterLink],
   templateUrl: './registro.html',
   styleUrl: './registro.css',
 })

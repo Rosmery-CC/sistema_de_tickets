@@ -15,9 +15,9 @@ export interface UserData{
   providedIn: 'root'
 })
 export class AutentiService {
-  private auth: Auth =inject(Auth); // manejo de regristros o login 
-  private firestore :Firestore=inject(Firestore); // para guardar datos extra del usuario 
-  private router : Router =inject(Router); // para redirigir despues de login
+  private auth: Auth ; // manejo de regristros o login 
+  private firestore :Firestore; // para guardar datos extra del usuario 
+  private router : Router ; // para redirigir despues de login
   
   
   user$:Observable<User | null>;
@@ -25,7 +25,11 @@ export class AutentiService {
 
 
 constructor() {
-  this.user$ =user(this.auth);
+  this.auth=inject(Auth);
+  this.firestore=inject(Firestore);
+  this.router=inject(Router);
+
+  this.user$=user(this.auth)
   this.user$.subscribe(user =>{
     this.currentUser =user;
   })
@@ -35,9 +39,9 @@ async register(email :string , password :string , displayName : string  , role :
   try{
     const credential = await createUserWithEmailAndPassword(this.auth,email,password);
     //Guardar datos adicionales en firestore
-    const userDocRef = doc(this.firestore, 'users/${credential.user.vid}');
+    const userDocRef = doc(this.firestore, `users/${credential.user.uid}`);
     await setDoc(userDocRef,{
-      uid: credential.user.providerData,
+      uid: credential.user.uid,
       email: email,
       displayName:displayName,
       role:role,
@@ -69,9 +73,9 @@ async logout(){
   }
 }
 //obtener datos del usuario desde firestore
-async getUserData(vid :string):Promise<UserData | null> {
+async getUserData(uid :string):Promise<UserData | null> {
   try{
-    const userDocRef =doc(this.firestore, 'user/${vid}');
+    const userDocRef =doc(this.firestore, `users/${uid}`);
     const userDoc = await getDoc(userDocRef);
 
     if(userDoc.exists()){
@@ -95,7 +99,7 @@ getCurrentUserID():string | null{
 }
 //para mensajes de error  personalizados
 private getErrorMessage(errorCode:string):string{
-  const getErrorMessage:{ [key: string]: string } = {
+  const ErrorMessage:{ [key: string]: string } = {
       'auth/email-already-in-use': 'Este correo ya está registrado',
       'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres',
       'auth/invalid-email': 'Correo electrónico inválido',
@@ -104,7 +108,7 @@ private getErrorMessage(errorCode:string):string{
       'auth/invalid-credential': 'Credenciales inválidas',
       'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde'
     };
-    return getErrorMessage[errorCode]||'Error en la autenticacion';
+    return ErrorMessage[errorCode]||'Error en la autenticacion';
 }
 
 

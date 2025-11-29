@@ -1,0 +1,109 @@
+<div class="lista-container">
+  <!-- Barra de navegación -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <h1>Sistema de Tickets</h1>
+      <div class="nav-buttons">
+        <button class="btn-crear" routerLink="/tickets/crear">
+          + Nuevo Ticket
+        </button>
+        <button class="btn-logout" (click)="cerrarSesion()">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content">
+    <!-- Filtros y búsqueda -->
+    <div class="filtros-container">
+      <div class="filtro-group">
+        <label>Buscar:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="busqueda"
+          (ngModelChange)="onBusquedaChange()"
+          placeholder="Buscar por título, descripción o usuario..."
+          class="search-input">
+      </div>
+
+      <div class="filtro-group">
+        <label>Estado:</label>
+        <select [(ngModel)]="filtroEstado" (change)="onFiltroEstadoChange()">
+          <option value="todos">Todos</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="en proceso">En Proceso</option>
+          <option value="resuelto">Resuelto</option>
+        </select>
+      </div>
+
+      <div class="filtro-group">
+        <label>Prioridad:</label>
+        <select [(ngModel)]="filtroPrioridad" (change)="onFiltroPrioridadChange()">
+          <option value="todos">Todas</option>
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+
+      <div class="filtro-group">
+        <label>Ordenar:</label>
+        <select [(ngModel)]="ordenActual" (change)="onOrdenChange()">
+          <option value="fecha-desc">Más reciente</option>
+          <option value="fecha-asc">Más antiguo</option>
+          <option value="prioridad">Por prioridad</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading">
+      <p>Cargando tickets...</p>
+    </div>
+
+    <!-- Lista vacía -->
+    <div *ngIf="!isLoading && ticketsFiltrados.length === 0" class="empty-state">
+      <p>No hay tickets para mostrar</p>
+      <button class="btn-crear" routerLink="/tickets/crear">
+        Crear mi primer ticket
+      </button>
+    </div>
+
+    <!-- Lista de tickets -->
+    <div *ngIf="!isLoading && ticketsFiltrados.length > 0" class="tickets-grid">
+      <div *ngFor="let ticket of ticketsFiltrados" class="ticket-card">
+        <div class="ticket-header">
+          <h3>{{ ticket.titulo }}</h3>
+          <div class="badges">
+            <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
+              {{ ticket.estado }}
+            </span>
+            <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
+              {{ ticket.prioridad }}
+            </span>
+          </div>
+        </div>
+
+        <p class="ticket-description">{{ ticket.descripcion }}</p>
+
+        <div class="ticket-info">
+          <div class="info-item">
+            <span class="label">Usuario:</span>
+            <span>{{ ticket.usuarioNombre }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Creado:</span>
+            <span>{{ ticket.fechaCreacion| date:'short'}}</span>
+          </div>
+        </div>
+
+        <div class="ticket-actions">
+          <button class="btn-ver" [routerLink]="['/tickets', ticket.id]">
+            Ver Detalles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Registro } from "./auth/registro/registro";
+//import { Registro } from "./auth/registro/registro";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Registro],
+  imports: [RouterOutlet,],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
