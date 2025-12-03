@@ -35,7 +35,7 @@ export class CrearTicket {
     });
   }
 
-  async onSumit(){
+  async onSubmit(){
     if(this.ticketForm.invalid){
       this.markFormGroupTouched(this.ticketForm);
       return;

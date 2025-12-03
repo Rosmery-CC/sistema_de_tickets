@@ -1,1 +1,66 @@
-<p>crear-ticket works!</p>
+<div class="crear-ticket-container">
+  <div class="crear-ticket-card">
+    <h2>Crear Nuevo Ticket</h2>
+    <p class="subtitle">Describe tu problema para recibir asistencia</p>
+
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="titulo">Título del Ticket *</label>
+        <input 
+          type="text" 
+          id="titulo" 
+          formControlName="titulo"
+          placeholder="Ej: Problema con el sistema de pagos"
+          [class.error]="titulo?.invalid && titulo?.touched">
+        <div class="error-message" *ngIf="titulo?.invalid && titulo?.touched">
+          <span *ngIf="titulo?.errors?.['required']">El título es obligatorio</span>
+          <span *ngIf="titulo?.errors?.['minlength']">Mínimo 5 caracteres</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción del Problema *</label>
+        <textarea 
+          id="descripcion" 
+          formControlName="descripcion"
+          rows="5"
+          placeholder="Describe detalladamente el problema que estás experimentando..."
+          [class.error]="descripcion?.invalid && descripcion?.touched"></textarea>
+        <div class="error-message" *ngIf="descripcion?.invalid && descripcion?.touched">
+          <span *ngIf="descripcion?.errors?.['required']">La descripción es obligatoria</span>
+          <span *ngIf="descripcion?.errors?.['minlength']">Mínimo 10 caracteres</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="prioridad">Prioridad *</label>
+        <select id="prioridad" formControlName="prioridad">
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn-secondary" routerLink="/tickets">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn-primary"
+          [disabled]="isLoading">
+          <span *ngIf="!isLoading">Crear Ticket</span>
+          <span *ngIf="isLoading">Creando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

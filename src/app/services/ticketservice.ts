@@ -12,7 +12,7 @@ export interface Ticket{
   titulo:string;
   descripcion:string;
   prioridad :'baja'| 'media' | 'alta' ;
-  estado : 'pendientes'|'en proceso ' |'resuelto ',
+  estado : 'pendiente'|'en proceso' |'resuelto',
   usuarioId : string;
   usuarioNombre :string;
   usuariEmail:string;
@@ -61,7 +61,7 @@ export class ticketService {
     const q = query(
       this.ticketsCollection,
       where('usuarioID','==',usuarioId),
-      orderBy('fechaCreacion','desc')
+      //orderBy('fechaCreacion','desc')
     );
     return collectionData(q ,{idField: 'id'}) as Observable<Ticket[]>;
   }
@@ -164,7 +164,7 @@ async eliminarTicket( ticketID : string): Promise<{success:boolean;error?: strin
   }
 }
 // filtrar  tickets por estado
-getTicketsPorEstado(estado : 'pendiente '|' en proceso' | 'resulto'):Observable<Ticket[]>{
+getTicketsPorEstado(estado : 'pendiente'|'en proceso' | 'resulto'):Observable<Ticket[]>{
   const q = query(
     this.ticketsCollection,
     where('estado','==',estado),
@@ -187,9 +187,9 @@ async obtenerEstadistica():Promise<{
 
     return {
       total :tickets.length,
-      pendientes: tickets.filter (t => t.estado === 'pendientes').length,
-      enProceso : tickets.filter (t => t.estado === 'en proceso ').length,
-      resueltos : tickets.filter(t=> t.estado === 'resuelto ').length,
+      pendientes: tickets.filter (t => t.estado === 'pendiente').length,
+      enProceso : tickets.filter (t => t.estado === 'en proceso').length,
+      resueltos : tickets.filter(t=> t.estado === 'resuelto').length,
     };
   }catch (error){
     console.error('Error al obtener estadisticas ',error );

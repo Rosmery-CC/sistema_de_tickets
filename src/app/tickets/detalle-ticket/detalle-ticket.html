@@ -1,1 +1,128 @@
-<p>detalle-ticket works!</p>
+<div class="detalle-container">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <button class="btn-back" (click)="volverAtras()">
+        ← Volver a Tickets
+      </button>
+      <h1>Detalle del Ticket</h1>
+    </div>
+  </nav>
+
+  <div class="content">
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading">
+      <p>Cargando ticket...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorMessage && !isLoading" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Success -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <!-- Ticket Detail -->
+    <div *ngIf="!isLoading && ticket" class="ticket-detail">
+      
+      <!-- Header -->
+      <div class="ticket-header">
+        <div class="header-left">
+          <h2>{{ ticket.titulo }}</h2>
+          <div class="badges">
+            <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
+              {{ ticket.estado }}
+            </span>
+            <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
+              Prioridad: {{ ticket.prioridad }}
+            </span>
+          </div>
+        </div>
+        <div class="ticket-id">
+          #{{ ticket.id?.substring(0, 8) }}
+        </div>
+      </div>
+
+      <!-- Información principal -->
+      <div class="ticket-info-card">
+        <h3>Descripción</h3>
+        <p class="descripcion">{{ ticket.descripcion }}</p>
+      </div>
+
+      <!-- Información del usuario -->
+      <div class="ticket-info-card">
+        <h3>Información del Ticket</h3>
+        <div class="info-grid">  
+          <div class="info-item">
+            <span class="label">Creado por:</span>
+            <span>{{ ticket.usuarioNombre }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span>{{ ticket.usuarioId }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Fecha de creación:</span>
+            <span>{{ getFecha(ticket.fechaCreacion) | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Última actualización:</span>
+            <span>{{ getFecha(ticket.fechaActualizacion) | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial de cambios -->
+      <div class="ticket-info-card" *ngIf="ticket.historial && ticket.historial.length > 0">
+        <h3>Historial de Cambios</h3>
+        <div class="historial">
+          <div *ngFor="let cambio of ticket.historial" class="historial-item">
+            <div class="historial-icon">📝</div>
+            <div class="historial-content">
+              <p class="historial-cambio">{{ cambio.cambio }}</p>
+              <p class="historial-meta">
+                Por: {{ cambio.usuario }} - 
+                {{ getFecha(cambio.fecha) | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones (solo para soporte) -->
+      <div class="ticket-actions" *ngIf="userRole === 'soporte'">
+        <h3>Acciones de Soporte</h3>
+        <div class="action-buttons">
+          <button 
+            class="btn-estado btn-pendiente"
+            (click)="actualizarEstado('pendiente')"
+            [disabled]="isUpdating || ticket.estado === 'pendiente' ">
+            Marcar como Pendiente
+          </button>
+          <button 
+            class="btn-estado btn-proceso"
+            (click)="actualizarEstado('en proceso')"
+            [disabled]="isUpdating || ticket.estado === 'en proceso' ">
+            Marcar En Proceso
+          </button>
+          <button 
+            class="btn-estado btn-resuelto"
+            (click)="actualizarEstado('resuelto')"
+            [disabled]="isUpdating || ticket.estado === 'resuelto' ">
+            Marcar como Resuelto
+          </button>
+          <button 
+            class="btn-eliminar"
+            (click)="eliminarTicket()"
+            [disabled]="isUpdating">
+            Eliminar Ticket
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
