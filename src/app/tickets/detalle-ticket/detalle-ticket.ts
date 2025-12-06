@@ -124,7 +124,7 @@ export class DetalleTicket  implements OnInit{
 
   getPrioridadClass(prioridad:string):string{
     const clases :{[key:string]:string}={
-      'baja':'bedge-baja',
+      'baja':'badge-baja',
       'media':'badge-media',
       'alta':'badge-alta'
     };

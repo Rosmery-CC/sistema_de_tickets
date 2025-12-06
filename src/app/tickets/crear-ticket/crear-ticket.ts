@@ -29,8 +29,8 @@ export class CrearTicket {
 
   constructor(){
     this.ticketForm = this.fb.group({
-      titulo :[' ',[Validators.required , Validators.minLength(5)]],
-      descripcion:[ ' ',[Validators.required , Validators.minLength(10)]],
+      titulo :['',[Validators.required , Validators.minLength(5)]],
+      descripcion:[ '',[Validators.required , Validators.minLength(10)]],
       prioridad : ['media',[Validators.required]]
     });
   }
@@ -56,7 +56,7 @@ export class CrearTicket {
 
     const nuevoticket ={
       ...this.ticketForm.value,
-      estado:'pendiente ' as const,
+      estado:'pendiente' as const,
       usuarioId:currentUser.uid,
       usuarioNombre : userData?.displayName||currentUser.email||'Usuario',
       usuarioEmail :currentUser.email||''

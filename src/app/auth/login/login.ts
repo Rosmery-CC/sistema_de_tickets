@@ -25,7 +25,7 @@ export class Login {
   constructor(){
     this.loginForm =this.fb.group({
       email:['',[Validators.required,Validators.email]],
-      password:['',[Validators.required ,Validators.minLength]]
+      password:['',[Validators.required ,Validators.minLength(6)]]
     });
   }
 

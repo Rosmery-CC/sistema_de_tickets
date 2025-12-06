@@ -2,6 +2,7 @@ import { Injectable ,inject } from '@angular/core';
 import { Firestore ,collection ,doc ,addDoc , updateDoc ,deleteDoc ,getDoc, getDocs,query,where,orderBy ,Timestamp,collectionData,docData } from '@angular/fire/firestore';
 import { AutentiService } from '../autenti.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { dataConnectInstance$ } from '@angular/fire/data-connect';
 import { Data } from '@angular/router';
 
@@ -15,7 +16,7 @@ export interface Ticket{
   estado : 'pendiente'|'en proceso' |'resuelto',
   usuarioId : string;
   usuarioNombre :string;
-  usuariEmail:string;
+  usuarioEmail:string;
   fechaCreacion :Date;
   fechaActualizacion : Date;
   historial?:HistorialCambio[];
@@ -60,23 +61,53 @@ export class ticketService {
   getTicketsPorUsuario(usuarioId:string): Observable<Ticket[]>{
     const q = query(
       this.ticketsCollection,
-      where('usuarioID','==',usuarioId),
-      //orderBy('fechaCreacion','desc')
+      where('usuarioId','==',usuarioId),
+      orderBy('fechaCreacion','desc')
     );
-    return collectionData(q ,{idField: 'id'}) as Observable<Ticket[]>;
+    return collectionData(q ,{idField: 'id'}).pipe(
+      map((tickets:any[])=> tickets.map(ticket=>({
+        ...ticket,
+        fechaCreacion: ticket.fechaCreacion?.toDate ? ticket.fechaCreacion.toDate() : ticket.fechaCreacion,
+        fechaActualizacion: ticket.fechaActualizacion?.toDate ? ticket.fechaActualizacion.toDate(): ticket.fechaActualizacion,
+        historial: ticket.historial?.map((h:any) =>({
+          ...h,
+        fecha:h.fecha?.toDate ? h.fecha.toDate(): h.fecha
+        }))
+      }))
+    )) as Observable<Ticket[]>;
+    
   }
   
   //Obtener todos los tickets (para los soportes )
-  getTodosLosTickets():Observable<Ticket[]>{
-    const q = query(this.ticketsCollection ,orderBy('fechaCreacion','desc'));
-    return collectionData(q ,{idField : 'id'})as Observable<Ticket[]>;
-  }
-
+getTodosLosTickets(): Observable<Ticket[]> {
+  const q = query(this.ticketsCollection, orderBy('fechaCreacion', 'desc'));
+  return collectionData(q, { idField: 'id' }).pipe(
+    map((tickets: any[]) => tickets.map(ticket => ({  
+      ...ticket,
+      fechaCreacion: ticket.fechaCreacion?.toDate ? ticket.fechaCreacion.toDate() : ticket.fechaCreacion,
+      fechaActualizacion: ticket.fechaActualizacion?.toDate ? ticket.fechaActualizacion.toDate() : ticket.fechaActualizacion,
+      historial: ticket.historial?.map((h: any) => ({
+        ...h,
+        fecha: h.fecha?.toDate ? h.fecha.toDate() : h.fecha
+      }))
+    }))
+  )) as  Observable<Ticket[]>;
+}
 
   //Obtener un ticket por ID
   getTicketPorID(id :string):Observable<Ticket>{
     const ticketDoc = doc(this.firestore,`tickets/${id}`);
-    return docData(ticketDoc , {idField: 'id'}) as Observable<Ticket>;
+    return docData(ticketDoc , {idField: 'id'}).pipe (
+      map((ticket: any)=>({
+        ...ticket,
+        fechaCreacion:ticket.fechaCreacion?.toDate ? ticket.fechaCreacion.toDate():ticket.fechaCreacion,
+        fechaActualizacion: ticket.fechaActualizacion?.toDate ? ticket.fechaActualizacion.toDate():ticket.fechaActualizacion,
+        historial: ticket.historial?.map((h:any)=>({
+          ...h,
+          facha: h.facha?.toDate ? h.facha.toDate(): h.facha
+        }))
+      }))
+    )as Observable<Ticket>;
   }
 
 
@@ -164,13 +195,23 @@ async eliminarTicket( ticketID : string): Promise<{success:boolean;error?: strin
   }
 }
 // filtrar  tickets por estado
-getTicketsPorEstado(estado : 'pendiente'|'en proceso' | 'resulto'):Observable<Ticket[]>{
+getTicketsPorEstado(estado : 'pendiente'|'en proceso' | 'resuelto'):Observable<Ticket[]>{
   const q = query(
     this.ticketsCollection,
     where('estado','==',estado),
-    orderBy('fechaCreacion ','desc')
+    orderBy('fechaCreacion','desc')
   );
-  return collectionData(q ,{idField :'id'})as Observable<Ticket[]>;
+  return collectionData(q ,{idField :'id'}).pipe(
+    map((tickets:any[])=> tickets.map(ticket=>({
+      ...ticket,
+      fechaCreacion: ticket.fechaCreacion?.toDate ? ticket.fechaCreacion.toDate() : ticket.fechaCreacion,
+      fechaActualizacion: ticket.fechaActualizacion?.toDate ? ticket.fechaActualizacion.toDate() : ticket.fechaActualizacion,
+       historial: ticket.historial?.map((h: any)=>({
+        ...h,
+        fecha: h.facha?.toDate ? h.facha.toDate() :h.facha
+       }))
+    }))
+  )) as Observable<Ticket[]>;
 
 }
 

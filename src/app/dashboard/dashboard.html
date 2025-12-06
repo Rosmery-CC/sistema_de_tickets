@@ -1,1 +1,125 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <div class="nav-left">
+        <h1>Dashboard de Soporte</h1>
+        <p class="welcome">Bienvenido, {{ userName }}</p>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn-tickets" routerLink="/tickets">
+          Ver Todos los Tickets
+        </button>
+        <button class="btn-logout" (click)="cerrarSesion()">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content">
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading">
+      <p>Cargando estadísticas...</p>
+    </div>
+
+    <!-- Estadísticas -->
+    <div *ngIf="!isLoading" class="stats-grid">
+      
+      <!-- Total de Tickets -->
+      <div class="stat-card stat-total">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <h3>Total de Tickets</h3>
+          <p class="stat-number">{{ estadisticas.total }}</p>
+        </div>
+      </div>
+
+      <!-- Pendientes -->
+      <div class="stat-card stat-pendiente">
+        <div class="stat-icon">🟡</div>
+        <div class="stat-content">
+          <h3>Pendientes</h3>
+          <p class="stat-number">{{ estadisticas.pendientes }}</p>
+          <div class="stat-bar">
+            <div class="stat-fill stat-fill-pendiente" 
+                 [style.width.%]="getPorcentaje(estadisticas.pendientes)"></div>
+          </div>
+          <p class="stat-percentage">{{ getPorcentaje(estadisticas.pendientes) }}%</p>
+        </div>
+      </div>
+
+      <!-- En Proceso -->
+      <div class="stat-card stat-proceso">
+        <div class="stat-icon">🔵</div>
+        <div class="stat-content">
+          <h3>En Proceso</h3>
+          <p class="stat-number">{{ estadisticas.enProceso }}</p>
+          <div class="stat-bar">
+            <div class="stat-fill stat-fill-proceso" 
+                 [style.width.%]="getPorcentaje(estadisticas.enProceso)"></div>
+          </div>
+          <p class="stat-percentage">{{ getPorcentaje(estadisticas.enProceso) }}%</p>
+        </div>
+      </div>
+
+      <!-- Resueltos -->
+      <div class="stat-card stat-resuelto">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-content">
+          <h3>Resueltos</h3>
+          <p class="stat-number">{{ estadisticas.resueltos }}</p>
+          <div class="stat-bar">
+            <div class="stat-fill stat-fill-resuelto" 
+                 [style.width.%]="getPorcentaje(estadisticas.resueltos)"></div>
+          </div>
+          <p class="stat-percentage">{{ getPorcentaje(estadisticas.resueltos) }}%</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tickets Recientes -->
+    <div class="tickets-recientes" *ngIf="!isLoading">
+      <h2>Tickets Recientes</h2>
+      
+      <div class="empty-state" *ngIf="ticketsRecientes.length === 0">
+        <p>No hay tickets registrados aún</p>
+      </div>
+
+      <div class="tickets-list" *ngIf="ticketsRecientes.length > 0">
+        <div *ngFor="let ticket of ticketsRecientes" class="ticket-item">
+          <div class="ticket-main">
+            <div class="ticket-header-info">
+              <h3>{{ ticket.titulo }}</h3>
+              <div class="badges">
+                <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
+                  {{ ticket.estado }}
+                </span>
+                <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
+                  {{ ticket.prioridad }}
+                </span>
+              </div>
+            </div>
+            <p class="ticket-desc">{{ ticket.descripcion }}</p>
+            <div class="ticket-meta">
+              <span>👤 {{ ticket.usuarioNombre }}</span>
+              <span>📅 {{ getFecha(ticket.fechaCreacion) | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+          <div class="ticket-actions">
+            <button class="btn-ver" [routerLink]="['/tickets', ticket.id]">
+              Ver Detalle
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ver-todos" *ngIf="ticketsRecientes.length > 0">
+        <button class="btn-ver-todos" routerLink="/tickets">
+          Ver Todos los Tickets →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
