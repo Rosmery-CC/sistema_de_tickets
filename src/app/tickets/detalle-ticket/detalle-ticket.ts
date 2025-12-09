@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute,Router, RouterLink } from '@angular/router';
 import { Ticket, ticketService } from '../../services/ticketservice';
 import { AutentiService } from '../../autenti.service';
+import { EstadoPipe } from '../../pipes/estado-pipe';
+import { TiempoRelativoPipe } from '../../pipes/tiempo-relativo-pipe';
 
 
 @Component({
   selector: 'app-detalle-ticket',
   standalone : true,
-  imports: [CommonModule , RouterLink],
+  imports: [CommonModule , RouterLink , EstadoPipe,TiempoRelativoPipe],
   templateUrl: './detalle-ticket.html',
   styleUrl: './detalle-ticket.css',
 })

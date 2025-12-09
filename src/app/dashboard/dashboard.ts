@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ticketService , Ticket } from '../services/ticketservice';
 import { AutentiService } from '../autenti.service';
+import { EstadoPipe } from '../pipes/estado-pipe';
+import { TiempoRelativoPipe } from '../pipes/tiempo-relativo-pipe';
 
 
 interface Estadisticas{
@@ -15,7 +17,7 @@ interface Estadisticas{
 @Component({
   selector: 'app-dashboard',
   standalone:true,
-  imports: [CommonModule , RouterLink],
+  imports: [CommonModule , RouterLink , EstadoPipe ,TiempoRelativoPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

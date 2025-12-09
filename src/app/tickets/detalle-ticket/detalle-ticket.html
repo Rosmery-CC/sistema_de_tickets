@@ -34,7 +34,7 @@
           <h2>{{ ticket.titulo }}</h2>
           <div class="badges">
             <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
-              {{ ticket.estado }}
+              {{ ticket.estado | estado}}
             </span>
             <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
               Prioridad: {{ ticket.prioridad }}
@@ -66,11 +66,11 @@
           </div>
           <div class="info-item">
             <span class="label">Fecha de creación:</span>
-            <span>{{ getFecha(ticket.fechaCreacion) | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span>{{ ticket.fechaCreacion | tiempoRelativo}}</span>
           </div>
           <div class="info-item">
             <span class="label">Última actualización:</span>
-            <span>{{ getFecha(ticket.fechaActualizacion) | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span>{{ ticket.fechaActualizacion | tiempoRelativo}}</span>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@
               <p class="historial-cambio">{{ cambio.cambio }}</p>
               <p class="historial-meta">
                 Por: {{ cambio.usuario }} - 
-                {{ getFecha(cambio.fecha) | date:'dd/MM/yyyy HH:mm' }}
+                {{ cambio.fecha | tiempoRelativo}}
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@
         <h3>Acciones de Soporte</h3>
         <div class="action-buttons">
           <button 
-            class="btn-estado btn-pendiente"
+            class="btn-estado btn-pendiente" 
             (click)="actualizarEstado('pendiente')"
             [disabled]="isUpdating || ticket.estado === 'pendiente' ">
             Marcar como Pendiente

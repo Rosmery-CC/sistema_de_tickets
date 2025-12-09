@@ -94,7 +94,7 @@
               <h3>{{ ticket.titulo }}</h3>
               <div class="badges">
                 <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
-                  {{ ticket.estado }}
+                  {{ ticket.estado | estado}}
                 </span>
                 <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
                   {{ ticket.prioridad }}
@@ -104,7 +104,7 @@
             <p class="ticket-desc">{{ ticket.descripcion }}</p>
             <div class="ticket-meta">
               <span>👤 {{ ticket.usuarioNombre }}</span>
-              <span>📅 {{ getFecha(ticket.fechaCreacion) | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span>📅 {{ticket.fechaCreacion | tiempoRelativo  }}</span>
             </div>
           </div>
           <div class="ticket-actions">

@@ -5,14 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { Ticket, ticketService } from '../../services/ticketservice';
 import { AutentiService } from '../../autenti.service';
 import { consumerAfterComputation } from '@angular/core/primitives/signals';
-
+import { EstadoPipe } from '../../pipes/estado-pipe';
+import { TiempoRelativoPipe } from '../../pipes/tiempo-relativo-pipe';
 
 
 
 @Component({
   selector: 'app-lista-tickets',
   standalone: true,
-  imports: [CommonModule ,RouterLink, FormsModule],
+  imports: [CommonModule ,RouterLink, FormsModule , EstadoPipe, TiempoRelativoPipe],
   templateUrl: './lista-tickets.html',
   styleUrl: './lista-tickets.css',
 })

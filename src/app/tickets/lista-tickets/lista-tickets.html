@@ -8,7 +8,7 @@
           + Nuevo Ticket
         </button>
         <button class="btn-logout" (click)="cerrarSesion()">
-          Cerrar Sesión
+          Cerrar Sesión 
         </button>
       </div>
     </div>
@@ -77,7 +77,7 @@
           <h3>{{ ticket.titulo }}</h3>
           <div class="badges">
             <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
-              {{ ticket.estado }}
+              {{ ticket.estado | estado}}
             </span>
             <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
               {{ ticket.prioridad }}
@@ -94,7 +94,7 @@
           </div>
           <div class="info-item">
             <span class="label">Creado:</span>
-            <span>{{ ticket.fechaCreacion| date:'short'}}</span>
+            <span>{{ ticket.fechaCreacion|tiempoRelativo }}</span>
           </div>
         </div>
 
