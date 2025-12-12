@@ -10,7 +10,10 @@
   padding: 20px 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
+/* Navbar especial para soporte*/
+.navbar-soporte {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
 .nav-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -56,6 +59,22 @@
 
 .btn-logout:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-dashboard {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-dashboard:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-2px);
 }
 
 /* Contenido */
@@ -239,7 +258,7 @@
 .btn-ver {
   flex: 1;
   padding: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2841b3 0%, #a794b9 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -268,4 +287,5 @@
     gap: 16px;
     text-align: center;
   }
+
 }

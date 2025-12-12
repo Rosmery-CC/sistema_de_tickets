@@ -1,6 +1,6 @@
 <div class="detalle-container">
   <!-- Navbar -->
-  <nav class="navbar">
+  <nav class="navbar" [ngClass]="{'navbar-soporte': userRole === 'soporte'}">
     <div class="nav-content">
       <button class="btn-back" (click)="volverAtras()">
         ← Volver a Tickets

@@ -1,9 +1,12 @@
 <div class="lista-container">
   <!-- Barra de navegación -->
-  <nav class="navbar">
+  <nav class="navbar"  [ngClass]="{'navbar-soporte': userRole === 'soporte'}">
     <div class="nav-content">
       <h1>Sistema de Tickets</h1>
       <div class="nav-buttons">
+        <button class="btn-dashboard" routerLink="/dashboard" *ngIf="userRole === 'soporte'">
+          ← Volver a Dashboard
+        </button>
         <button class="btn-crear" routerLink="/tickets/crear">
           + Nuevo Ticket
         </button>
