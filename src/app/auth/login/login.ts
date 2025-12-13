@@ -1,5 +1,5 @@
 import { Component ,inject} from '@angular/core';
-import { FormBuilder ,FormGroup,Validators,ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder ,FormGroup,Validators,ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -8,7 +8,7 @@ import { AutentiService } from '../../autenti.service';
 @Component({
   selector: 'app-login',
   standalone :true,
-  imports: [CommonModule,ReactiveFormsModule, RouterLink],
+  imports: [CommonModule,ReactiveFormsModule, RouterLink ,FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -21,6 +21,10 @@ export class Login {
   loginForm :FormGroup ;
   errorMessage :string = '';
   isLoading :boolean = false;
+  showRoleModal: boolean = false;
+  selectedRole: 'usuario' | 'soporte' = 'usuario';
+  pendingGoogleUser: any = null;
+
 
   constructor(){
     this.loginForm =this.fb.group({
@@ -70,5 +74,66 @@ export class Login {
  get email (){return this.loginForm.get('email');}
  get password (){return this.loginForm.get('password');}
 
+   // Método para iniciar sesión con Google
+  async onGoogleLogin() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    // Primero intentamos el login sin rol para verificar si es usuario nuevo
+    const result = await this.authService.loginWithGoogle();
+
+    this.isLoading = false;
+
+    if (result.success) {
+      // Si es un usuario nuevo, mostrar modal de selección de rol
+      if (result.isNewUser) {
+        this.pendingGoogleUser = result.user;
+        this.showRoleModal = true;
+      } else {
+        // Si ya existe, redirigir según su rol
+        const userData = await this.authService.getUserData(result.user!.uid);
+        this.redirectByRole(userData?.role);
+      }
+    } else {
+      this.errorMessage = result.error || 'Error al iniciar sesión con Google';
+    }
+  }
+
+  // Confirmar rol seleccionado
+  async confirmRole() {
+    if (!this.pendingGoogleUser) return;
+
+    this.isLoading = true;
+    this.showRoleModal = false;
+
+    // Crear usuario con el rol seleccionado
+    const result = await this.authService.loginWithGoogle(this.selectedRole);
+
+    this.isLoading = false;
+
+    if (result.success) {
+      this.redirectByRole(this.selectedRole);
+    } else {
+      this.errorMessage = result.error || 'Error al crear usuario';
+    }
+  }
+
+  // Cancelar selección de rol
+  cancelRoleSelection() {
+    this.showRoleModal = false;
+    this.pendingGoogleUser = null;
+    this.selectedRole = 'usuario';
+    // Cerrar sesión del usuario pendiente
+    this.authService.logout();
+  }
+
+  // Redirigir según rol
+  private redirectByRole(role: string | undefined) {
+    if (role === 'soporte') {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/tickets']);
+    }
+  }
 
 }

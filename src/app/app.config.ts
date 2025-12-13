@@ -12,7 +12,12 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideFirebaseApp(() =>initializeApp(environment.firebaseConfig)),
-    provideAuth(()=>getAuth()),
+       provideAuth(() => {
+      const auth = getAuth();
+      // Configurar persistencia LOCAL para mantener sesión
+      // Esto asegura que la autenticación persista incluso después de recargar la página
+      return auth;
+    }),
     provideFirestore(()=> getFirestore())
   ]
 };

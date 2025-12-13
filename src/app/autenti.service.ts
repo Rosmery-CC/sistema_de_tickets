@@ -1,5 +1,5 @@
 import { Injectable ,inject } from '@angular/core';
-import { Auth,createUserWithEmailAndPassword ,signInWithEmailAndPassword ,signOut,User,user } from '@angular/fire/auth';
+import { Auth,createUserWithEmailAndPassword ,signInWithEmailAndPassword ,signOut,User,user,GoogleAuthProvider , signInWithPopup } from '@angular/fire/auth';
 import { Firestore ,doc ,setDoc ,getDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { terminate } from 'firebase/firestore';
@@ -62,6 +62,33 @@ async login(email :string , password :string){
     return{success:false , error:this.getErrorMessage(error.code)};
   }
 }
+// para iniciar seccion con google 
+async loginWithGoogle(role: 'usuario' | 'soporte' = 'usuario') {
+    try {
+      const provider = new GoogleAuthProvider();
+      const credential = await signInWithPopup(this.auth, provider);
+      const user = credential.user;
+
+      // Verificar si el usuario ya existe en Firestore
+      const userDocRef = doc(this.firestore, `users/${user.uid}`);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // Si es un usuario nuevo, crear su documento con rol 'usuario'
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          email: user.email || '',
+          displayName: user.displayName || 'Usuario de Google',
+          role: role,
+          createdAt: new Date()
+        });
+      }
+
+      return { success: true, user: user, isNewUser: !userDoc.exists()};
+    } catch (error: any) {
+      return { success: false, error: this.getErrorMessage(error.code) };
+    }
+  }
 //para cerrar  sesión
 async logout(){
   try{
@@ -108,7 +135,7 @@ private getErrorMessage(errorCode:string):string{
       'auth/invalid-credential': 'Credenciales inválidas',
       'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde'
     };
-    return ErrorMessage[errorCode]||'Error en la autenticacion';
+    return ErrorMessage[errorCode]|| 'Error en la autenticacion';
 }
 
 
